@@ -4,7 +4,22 @@ require('dotenv').config();
 const { db } = require('./src/config/firebaseConfig');
 
 const app = express();
-app.use(cors());
+const allowedOrigins = [
+    'http://localhost:5173', // Frontend local
+    'https://frontexpendientes-m4ile77xf-ces-projects-d630e237.vercel.app', // Frontend en producción
+  ];
+  
+  app.use(cors({
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('CORS policy blocked this request.'));
+      }
+    },
+    methods: ['GET', 'POST', 'PUT', 'DELETE'], // Métodos HTTP permitidos
+    credentials: true, // Si usas cookies o encabezados de autenticación
+  }));
 app.use(express.json());
 
 
